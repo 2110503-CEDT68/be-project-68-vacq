@@ -4,7 +4,8 @@ const {
   getCompany,
   createCompany,
   updateCompany,
-  deleteCompany
+  deleteCompany,
+  getCompanyUsers
 } = require('../controllers/companies');
 
 // Include other resource routers
@@ -26,5 +27,11 @@ router
   .get(getCompany)
   .put(protect, authorize('admin'), updateCompany)
   .delete(protect, authorize('admin'), deleteCompany);
+
+//addition function
+router
+  .get('/:companyId/users', protect, authorize('admin'), getCompanyUsers);
+  
+  
 
 module.exports = router;
