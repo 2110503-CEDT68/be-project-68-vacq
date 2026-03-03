@@ -116,3 +116,45 @@ exports.getMe = async (req, res, next) => {
     data: user
   });
 };
+//Update Password
+exports.updatePassword = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user.id).select('+password');
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    if (!(await user.matchPassword(req.body.currentPassword))) {
+      return res.status(401).json({
+        success: false,
+        message: 'Current password is incorrect'
+      });
+    }
+
+    if (!req.body.newPassword) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide new password'
+      });
+    }
+
+    user.password = req.body.newPassword;
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Password updated successfully'
+    });
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: 'Cannot update password'
+    });
+  }
+};
