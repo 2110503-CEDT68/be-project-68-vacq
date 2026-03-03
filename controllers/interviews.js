@@ -94,10 +94,12 @@ exports.getInterview = async (req, res, next) => {
 // @route   POST /api/v1/companies/:companyId/interviews
 // @access  Private
 exports.addInterview = async (req, res, next) => {
+
   try {
     // Add user & company to req.body
     req.body.company = req.params.companyId;
     req.body.user = req.user.id;
+
 
     const company = await Company.findById(req.params.companyId);
 
@@ -112,17 +114,28 @@ exports.addInterview = async (req, res, next) => {
     const existedInterviews = await Interview.find({
       user: req.user.id
     });
-
+    
     if (existedInterviews.length >= 3){ //&& req.user.role !== 'admin') {
       return res.status(400).json({
         success: false,
         message: `The user with ID ${req.user.id} has already made 3 interview bookings`
       });
     }
+    // Check Exist?
+    const existedInterview = await Interview.findOne({
+      user: req.user.id,
+      company: req.params.companyId
+    });
+    if (existedInterviews) {
+      return res.status(400).json({
+        success: false,
+        message: 'You have already booked this company'
+      });
+    }
 
     const interview = await Interview.create(req.body);
 
-    res.status(200).json({
+    res.status(201).json({
       success: true,
       data: interview
     });

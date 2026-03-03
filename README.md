@@ -29,6 +29,7 @@ Simple Express + MongoDB backend adapted from the original template.
 ### Interviews
 - `GET /api/v1/interviews`
 - `GET /api/v1/interviews/:id`
+- `GET /api/v1/companies/:companyId/interviews`
 - `POST /api/v1/companies/:companyId/interviews`
 - `PUT /api/v1/interviews/:id`
 - `DELETE /api/v1/interviews/:id`
