@@ -24,6 +24,11 @@ const CompanySchema = new mongoose.Schema({
         type: String,
         required: [true, 'Please add a telephone number']
     },
+    maxInterviews: {
+        type: Number,
+        required: [true, 'Please add max interviews'],
+        min: 1
+    },
     createdAt: {
         type: Date,
         default: Date.now

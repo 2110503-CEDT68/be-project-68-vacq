@@ -110,12 +110,19 @@ exports.getCompany = async (req, res, next) => {
 // @route   POST /api/v1/companies
 // @access  Private
 exports.createCompany = async (req, res, next) => {
-  const company = await Company.create(req.body);
+  try {
+    const company = await Company.create(req.body);
 
-  res.status(201).json({
-    success: true,
-    data: company
-  });
+    res.status(201).json({
+      success: true,
+      data: company
+    });
+  } catch (err) {
+    res.status(400).json({
+      success: false,
+      message: err.message
+    });
+  }
 };
 
 // @desc    Update single company

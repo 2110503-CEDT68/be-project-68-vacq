@@ -126,13 +126,23 @@ exports.addInterview = async (req, res, next) => {
       user: req.user.id,
       company: req.params.companyId
     });
-    if (existedInterviews) {
+    if (existedInterview) {
       return res.status(400).json({
         success: false,
         message: 'You have already booked this company'
       });
     }
-
+    //Check Already Max?
+    const bookedCount = await Interview.countDocuments({
+      company: req.params.companyId
+    });
+    if (bookedCount >= company.maxInterviews) {
+      return res.status(400).json({
+        success: false,
+        message: 'This company has reached maximum interview capacity'
+      });
+    }
+    //Create
     const interview = await Interview.create(req.body);
 
     res.status(201).json({
