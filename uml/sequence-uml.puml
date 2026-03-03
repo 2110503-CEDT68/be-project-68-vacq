@@ -1,0 +1,377 @@
+@startuml Register User (POST)
+
+header Sample JobFair Sequence Diagram
+footer Page %page% of %lastpage%
+title "Register User (POST)"
+
+actor "Client" as client
+participant "<<javaScript>>\n:server" as server
+participant "<<router>>\n:auth" as routerAuth
+participant "<<controllers>>\n:auth" as controllersAuth
+participant "<<model>>\n:User" as modelUser
+database "<<MongoDB>>\n:users" as UsersDatabase
+
+client->server ++: req.post('/api/v1/auth/register')
+server->routerAuth ++: app.use('/api/v1/auth', auth)
+routerAuth -> controllersAuth ++: register()
+controllersAuth->modelUser ++: create(req.body)
+modelUser ->UsersDatabase ++: UserSchema
+UsersDatabase --> modelUser --: user
+controllersAuth <-- modelUser --: user
+controllersAuth->client --: response
+
+@enduml
+
+@startuml Login User (POST)
+
+header Sample JobFair Sequence Diagram
+footer Page %page% of %lastpage%
+title "Login User (POST)"
+
+actor "Client" as client
+participant "<<javaScript>>\n:server" as server
+participant "<<router>>\n:auth" as routerAuth
+participant "<<controllers>>\n:auth" as controllersAuth
+participant "<<model>>\n:User" as modelUser
+database "<<MongoDB>>\n:users" as UsersDatabase
+
+client->server ++: req.post('/api/v1/auth/login')
+server->routerAuth ++: app.use('/api/v1/auth', auth)
+routerAuth -> controllersAuth ++: login()
+controllersAuth->modelUser ++: findOne({email}).select('+password')
+modelUser ->UsersDatabase ++: query user
+UsersDatabase --> modelUser --: user
+controllersAuth <-- modelUser --: user
+controllersAuth->client --: response (token)
+
+@enduml
+
+@startuml Logout User (GET)
+
+header Sample JobFair Sequence Diagram
+footer Page %page% of %lastpage%
+title "Logout User (GET)"
+
+actor "Client" as client
+participant "<<javaScript>>\n:server" as server
+participant "<<router>>\n:auth" as routerAuth
+participant "<<controllers>>\n:auth" as controllersAuth
+
+client->server ++: req.get('/api/v1/auth/logout')
+server->routerAuth ++: app.use('/api/v1/auth', auth)
+routerAuth -> controllersAuth ++: logout()
+controllersAuth->client --: clear cookie + response
+
+@enduml
+
+@startuml Get Me (GET)
+
+header Sample JobFair Sequence Diagram
+footer Page %page% of %lastpage%
+title "Get Me (GET)"
+
+actor "Client" as client
+participant "<<javaScript>>\n:server" as server
+participant "<<router>>\n:auth" as routerAuth
+participant "<<controllers>>\n:auth" as controllersAuth
+participant "<<model>>\n:User" as modelUser
+database "<<MongoDB>>\n:users" as UsersDatabase
+
+client->server ++: req.get('/api/v1/auth/me')
+server->routerAuth ++: app.use('/api/v1/auth', auth)
+routerAuth -> controllersAuth ++: getMe()
+controllersAuth->modelUser ++: findById(req.user.id)
+modelUser ->UsersDatabase ++: query user
+UsersDatabase --> modelUser --: user
+controllersAuth <-- modelUser --: user
+controllersAuth->client --: response
+
+@enduml
+
+@startuml Manage Companies (GET)
+
+header Sample JobFair Sequence Diagram
+footer Page %page% of %lastpage%
+title "Manage Companies (GET)"
+
+actor "Client" as client
+participant "<<javaScript>>\n:server" as server
+participant "<<router>>\n:companies" as routerCompanies
+participant "<<controllers>>\n:companies" as controllersCompanies
+participant "<<model>>\n:Company" as modelCompany
+database "<<MongoDB>>\n:companies" as CompaniesDatabase
+
+client->server ++: req.get('/api/v1/companies')
+server->routerCompanies ++: app.use('/api/v1/companies', companies)
+routerCompanies -> controllersCompanies ++: getCompanies()
+controllersCompanies->modelCompany ++: find(req.query).populate('interviews')
+modelCompany ->CompaniesDatabase ++: CompanySchema
+CompaniesDatabase --> modelCompany --: companies
+controllersCompanies <-- modelCompany --: companies
+controllersCompanies->client --: response
+
+@enduml
+
+@startuml Get Company (GET)
+
+header Sample JobFair Sequence Diagram
+footer Page %page% of %lastpage%
+title "Get Company (GET)"
+
+actor "Client" as client
+participant "<<javaScript>>\n:server" as server
+participant "<<router>>\n:companies" as routerCompanies
+participant "<<controllers>>\n:companies" as controllersCompanies
+participant "<<model>>\n:Company" as modelCompany
+database "<<MongoDB>>\n:companies" as CompaniesDatabase
+
+client->server ++: req.get('/api/v1/companies/:id')
+server->routerCompanies ++: app.use('/api/v1/companies', companies)
+routerCompanies -> controllersCompanies ++: getCompany()
+controllersCompanies->modelCompany ++: findById(req.params.id)
+modelCompany ->CompaniesDatabase ++: query by id
+CompaniesDatabase --> modelCompany --: company
+controllersCompanies <-- modelCompany --: company
+controllersCompanies->client --: response
+
+@enduml
+
+@startuml Create Company (POST)
+
+header Sample JobFair Sequence Diagram
+footer Page %page% of %lastpage%
+title "Create Company (POST)"
+
+actor "Client" as client
+participant "<<javaScript>>\n:server" as server
+participant "<<router>>\n:companies" as routerCompanies
+participant "<<controllers>>\n:companies" as controllersCompanies
+participant "<<model>>\n:Company" as modelCompany
+database "<<MongoDB>>\n:companies" as CompaniesDatabase
+
+client->server ++: req.post('/api/v1/companies')
+server->routerCompanies ++: app.use('/api/v1/companies', companies)
+routerCompanies -> controllersCompanies ++: createCompany()
+controllersCompanies->modelCompany ++: create(req.body)
+modelCompany ->CompaniesDatabase ++: CompanySchema
+CompaniesDatabase --> modelCompany --: company
+controllersCompanies <-- modelCompany --: company
+controllersCompanies->client --: response
+
+@enduml
+
+@startuml Update Company (PUT)
+
+header Sample JobFair Sequence Diagram
+footer Page %page% of %lastpage%
+title "Update Company (PUT)"
+
+actor "Client" as client
+participant "<<javaScript>>\n:server" as server
+participant "<<router>>\n:companies" as routerCompanies
+participant "<<controllers>>\n:companies" as controllersCompanies
+participant "<<model>>\n:Company" as modelCompany
+database "<<MongoDB>>\n:companies" as CompaniesDatabase
+
+client->server ++: req.put('/api/v1/companies/:id')
+server->routerCompanies ++: app.use('/api/v1/companies', companies)
+routerCompanies -> controllersCompanies ++: updateCompany()
+controllersCompanies->modelCompany ++: findByIdAndUpdate(id, req.body)
+modelCompany ->CompaniesDatabase ++: update company
+CompaniesDatabase --> modelCompany --: company
+controllersCompanies <-- modelCompany --: company
+controllersCompanies->client --: response
+
+@enduml
+
+@startuml Delete Company (DELETE)
+
+header Sample JobFair Sequence Diagram
+footer Page %page% of %lastpage%
+title "Delete Company (DELETE)"
+
+actor "Client" as client
+participant "<<javaScript>>\n:server" as server
+participant "<<router>>\n:companies" as routerCompanies
+participant "<<controllers>>\n:companies" as controllersCompanies
+participant "<<model>>\n:Company" as modelCompany
+database "<<MongoDB>>\n:companies" as CompaniesDatabase
+
+client->server ++: req.delete('/api/v1/companies/:id')
+server->routerCompanies ++: app.use('/api/v1/companies', companies)
+routerCompanies -> controllersCompanies ++: deleteCompany()
+controllersCompanies->modelCompany ++: findById(req.params.id)
+modelCompany ->CompaniesDatabase ++: delete company
+CompaniesDatabase --> modelCompany --: deleted
+controllersCompanies <-- modelCompany --: deleted
+controllersCompanies->client --: response
+
+@enduml
+
+@startuml Manage Company Users (GET)
+
+header Sample JobFair Sequence Diagram
+footer Page %page% of %lastpage%
+title "Manage Company Users (GET)"
+
+actor "Client" as client
+participant "<<javaScript>>\n:server" as server
+participant "<<router>>\n:companies" as routerCompanies
+participant "<<controllers>>\n:companies" as controllersCompanies
+participant "<<model>>\n:User" as modelUser
+database "<<MongoDB>>\n:users" as UsersDatabase
+
+client->server ++: req.get('/api/v1/companies/:companyId/users')
+server->routerCompanies ++: app.use('/api/v1/companies', companies)
+routerCompanies -> controllersCompanies ++: getCompanyUsers()
+controllersCompanies->modelUser ++: find({company: req.params.companyId})
+modelUser ->UsersDatabase ++: query users
+UsersDatabase --> modelUser --: users
+controllersCompanies <-- modelUser --: users
+controllersCompanies->client --: response
+
+@enduml
+
+@startuml Manage Interviews (GET)
+
+header Sample JobFair Sequence Diagram
+footer Page %page% of %lastpage%
+title "Manage Interviews (GET)"
+
+actor "Client" as client
+participant "<<javaScript>>\n:server" as server
+participant "<<router>>\n:interviews" as routerInterviews
+participant "<<controllers>>\n:interviews" as controllersInterviews
+participant "<<model>>\n:Interview" as modelInterview
+database "<<MongoDB>>\n:interviews" as InterviewsDatabase
+
+client->server ++: req.get('/api/v1/interviews')
+server->routerInterviews ++: app.use('/api/v1/interviews', interviews)
+routerInterviews -> controllersInterviews ++: getInterviews()
+controllersInterviews->modelInterview ++: find().populate('company')
+modelInterview ->InterviewsDatabase ++: InterviewSchema
+InterviewsDatabase --> modelInterview --: interviews
+controllersInterviews <-- modelInterview --: interviews
+controllersInterviews->client --: response
+
+@enduml
+
+@startuml Manage Company Interviews (GET)
+
+header Sample JobFair Sequence Diagram
+footer Page %page% of %lastpage%
+title "Manage Company Interviews (GET)"
+
+actor "Client" as client
+participant "<<javaScript>>\n:server" as server
+participant "<<router>>\n:companies/interviews" as routerCompanyInterviews
+participant "<<controllers>>\n:interviews" as controllersInterviews
+participant "<<model>>\n:Interview" as modelInterview
+database "<<MongoDB>>\n:interviews" as InterviewsDatabase
+
+client->server ++: req.get('/api/v1/companies/:companyId/interviews')
+server->routerCompanyInterviews ++: app.use('/api/v1/companies', companies)
+routerCompanyInterviews -> controllersInterviews ++: getInterviews()
+controllersInterviews->modelInterview ++: find({company: companyId})
+modelInterview ->InterviewsDatabase ++: query interviews
+InterviewsDatabase --> modelInterview --: interviews
+controllersInterviews <-- modelInterview --: interviews
+controllersInterviews->client --: response
+
+@enduml
+
+@startuml Get Interview (GET)
+
+header Sample JobFair Sequence Diagram
+footer Page %page% of %lastpage%
+title "Get Interview (GET)"
+
+actor "Client" as client
+participant "<<javaScript>>\n:server" as server
+participant "<<router>>\n:interviews" as routerInterviews
+participant "<<controllers>>\n:interviews" as controllersInterviews
+participant "<<model>>\n:Interview" as modelInterview
+database "<<MongoDB>>\n:interviews" as InterviewsDatabase
+
+client->server ++: req.get('/api/v1/interviews/:id')
+server->routerInterviews ++: app.use('/api/v1/interviews', interviews)
+routerInterviews -> controllersInterviews ++: getInterview()
+controllersInterviews->modelInterview ++: findById(req.params.id)
+modelInterview ->InterviewsDatabase ++: query interview
+InterviewsDatabase --> modelInterview --: interview
+controllersInterviews <-- modelInterview --: interview
+controllersInterviews->client --: response
+
+@enduml
+
+@startuml Add Interview (POST)
+
+header Sample JobFair Sequence Diagram
+footer Page %page% of %lastpage%
+title "Add Interview (POST)"
+
+actor "Client" as client
+participant "<<javaScript>>\n:server" as server
+participant "<<router>>\n:companies/interviews" as routerCompanyInterviews
+participant "<<controllers>>\n:interviews" as controllersInterviews
+participant "<<model>>\n:Interview" as modelInterview
+database "<<MongoDB>>\n:interviews" as InterviewsDatabase
+
+client->server ++: req.post('/api/v1/companies/:companyId/interviews')
+server->routerCompanyInterviews ++: app.use('/api/v1/companies', companies)
+routerCompanyInterviews -> controllersInterviews ++: addInterview()
+controllersInterviews->modelInterview ++: create(req.body)
+modelInterview ->InterviewsDatabase ++: InterviewSchema
+InterviewsDatabase --> modelInterview --: interview
+controllersInterviews <-- modelInterview --: interview
+controllersInterviews->client --: response
+
+@enduml
+
+@startuml Update Interview (PUT)
+
+header Sample JobFair Sequence Diagram
+footer Page %page% of %lastpage%
+title "Update Interview (PUT)"
+
+actor "Client" as client
+participant "<<javaScript>>\n:server" as server
+participant "<<router>>\n:interviews" as routerInterviews
+participant "<<controllers>>\n:interviews" as controllersInterviews
+participant "<<model>>\n:Interview" as modelInterview
+database "<<MongoDB>>\n:interviews" as InterviewsDatabase
+
+client->server ++: req.put('/api/v1/interviews/:id')
+server->routerInterviews ++: app.use('/api/v1/interviews', interviews)
+routerInterviews -> controllersInterviews ++: updateInterview()
+controllersInterviews->modelInterview ++: findByIdAndUpdate(id, req.body)
+modelInterview ->InterviewsDatabase ++: update interview
+InterviewsDatabase --> modelInterview --: interview
+controllersInterviews <-- modelInterview --: interview
+controllersInterviews->client --: response
+
+@enduml
+
+@startuml Delete Interview (DELETE)
+
+header Sample JobFair Sequence Diagram
+footer Page %page% of %lastpage%
+title "Delete Interview (DELETE)"
+
+actor "Client" as client
+participant "<<javaScript>>\n:server" as server
+participant "<<router>>\n:interviews" as routerInterviews
+participant "<<controllers>>\n:interviews" as controllersInterviews
+participant "<<model>>\n:Interview" as modelInterview
+database "<<MongoDB>>\n:interviews" as InterviewsDatabase
+
+client->server ++: req.delete('/api/v1/interviews/:id')
+server->routerInterviews ++: app.use('/api/v1/interviews', interviews)
+routerInterviews -> controllersInterviews ++: deleteInterview()
+controllersInterviews->modelInterview ++: findById(req.params.id)
+modelInterview ->InterviewsDatabase ++: delete interview
+InterviewsDatabase --> modelInterview --: deleted
+controllersInterviews <-- modelInterview --: deleted
+controllersInterviews->client --: response
+
+@enduml
