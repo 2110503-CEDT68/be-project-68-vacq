@@ -1,10 +1,9 @@
 @startuml Register User (POST)
 
-header Sample JobFair Sequence Diagram
 footer Page %page% of %lastpage%
 title "Register User (POST)"
 
-actor "Client" as client
+actor "User/Admin" as client
 participant "<<javaScript>>\n:server" as server
 participant "<<router>>\n:auth" as routerAuth
 participant "<<controllers>>\n:auth" as controllersAuth
@@ -24,11 +23,10 @@ controllersAuth->client --: response
 
 @startuml Login User (POST)
 
-header Sample JobFair Sequence Diagram
 footer Page %page% of %lastpage%
 title "Login User (POST)"
 
-actor "Client" as client
+actor "User/Admin" as client
 participant "<<javaScript>>\n:server" as server
 participant "<<router>>\n:auth" as routerAuth
 participant "<<controllers>>\n:auth" as controllersAuth
@@ -48,11 +46,10 @@ controllersAuth->client --: response (token)
 
 @startuml Logout User (GET)
 
-header Sample JobFair Sequence Diagram
 footer Page %page% of %lastpage%
 title "Logout User (GET)"
 
-actor "Client" as client
+actor "User/Admin" as client
 participant "<<javaScript>>\n:server" as server
 participant "<<router>>\n:auth" as routerAuth
 participant "<<controllers>>\n:auth" as controllersAuth
@@ -66,11 +63,10 @@ controllersAuth->client --: clear cookie + response
 
 @startuml Get Me (GET)
 
-header Sample JobFair Sequence Diagram
 footer Page %page% of %lastpage%
 title "Get Me (GET)"
 
-actor "Client" as client
+actor "User/Admin" as client
 participant "<<javaScript>>\n:server" as server
 participant "<<router>>\n:auth" as routerAuth
 participant "<<controllers>>\n:auth" as controllersAuth
@@ -88,13 +84,12 @@ controllersAuth->client --: response
 
 @enduml
 
-@startuml Manage Companies (GET)
+@startuml Get All Companies (GET)
 
-header Sample JobFair Sequence Diagram
 footer Page %page% of %lastpage%
-title "Manage Companies (GET)"
+title "Get All Companies (GET)"
 
-actor "Client" as client
+actor "User/Admin" as client
 participant "<<javaScript>>\n:server" as server
 participant "<<router>>\n:companies" as routerCompanies
 participant "<<controllers>>\n:companies" as controllersCompanies
@@ -112,13 +107,12 @@ controllersCompanies->client --: response
 
 @enduml
 
-@startuml Get Company (GET)
+@startuml Get Single Company (GET)
 
-header Sample JobFair Sequence Diagram
 footer Page %page% of %lastpage%
-title "Get Company (GET)"
+title "Get Single Company (GET)"
 
-actor "Client" as client
+actor "User/Admin" as client
 participant "<<javaScript>>\n:server" as server
 participant "<<router>>\n:companies" as routerCompanies
 participant "<<controllers>>\n:companies" as controllersCompanies
@@ -136,13 +130,12 @@ controllersCompanies->client --: response
 
 @enduml
 
-@startuml Create Company (POST)
+@startuml Create Single Company (POST)
 
-header Sample JobFair Sequence Diagram
 footer Page %page% of %lastpage%
-title "Create Company (POST)"
+title "Create Single Company (POST)"
 
-actor "Client" as client
+actor "Admin" as client
 participant "<<javaScript>>\n:server" as server
 participant "<<router>>\n:companies" as routerCompanies
 participant "<<controllers>>\n:companies" as controllersCompanies
@@ -160,13 +153,12 @@ controllersCompanies->client --: response
 
 @enduml
 
-@startuml Update Company (PUT)
+@startuml Update Single Company (PUT)
 
-header Sample JobFair Sequence Diagram
 footer Page %page% of %lastpage%
-title "Update Company (PUT)"
+title "Update Single Company (PUT)"
 
-actor "Client" as client
+actor "Admin" as client
 participant "<<javaScript>>\n:server" as server
 participant "<<router>>\n:companies" as routerCompanies
 participant "<<controllers>>\n:companies" as controllersCompanies
@@ -184,13 +176,12 @@ controllersCompanies->client --: response
 
 @enduml
 
-@startuml Delete Company (DELETE)
+@startuml Delete Single Company (DELETE)
 
-header Sample JobFair Sequence Diagram
 footer Page %page% of %lastpage%
-title "Delete Company (DELETE)"
+title "Delete Single Company (DELETE)"
 
-actor "Client" as client
+actor "Admin" as client
 participant "<<javaScript>>\n:server" as server
 participant "<<router>>\n:companies" as routerCompanies
 participant "<<controllers>>\n:companies" as controllersCompanies
@@ -208,13 +199,12 @@ controllersCompanies->client --: response
 
 @enduml
 
-@startuml Manage Company Users (GET)
+@startuml Get Company Users (GET) (Addtional function)
 
-header Sample JobFair Sequence Diagram
 footer Page %page% of %lastpage%
-title "Manage Company Users (GET)"
+title "Get Company Users (GET) (Addtional function)"
 
-actor "Client" as client
+actor "Admin" as client
 participant "<<javaScript>>\n:server" as server
 participant "<<router>>\n:companies" as routerCompanies
 participant "<<controllers>>\n:companies" as controllersCompanies
@@ -232,13 +222,12 @@ controllersCompanies->client --: response
 
 @enduml
 
-@startuml Manage Interviews (GET)
+@startuml Get All Interviews (GET)
 
-header Sample JobFair Sequence Diagram
 footer Page %page% of %lastpage%
-title "Manage Interviews (GET)"
+title "Get All Interviews (GET)"
 
-actor "Client" as client
+actor "User/Admin" as client
 participant "<<javaScript>>\n:server" as server
 participant "<<router>>\n:interviews" as routerInterviews
 participant "<<controllers>>\n:interviews" as controllersInterviews
@@ -256,37 +245,12 @@ controllersInterviews->client --: response
 
 @enduml
 
-@startuml Manage Company Interviews (GET)
+@startuml Get Single Interview (GET)
 
-header Sample JobFair Sequence Diagram
 footer Page %page% of %lastpage%
-title "Manage Company Interviews (GET)"
+title "Get Single Interview (GET)"
 
-actor "Client" as client
-participant "<<javaScript>>\n:server" as server
-participant "<<router>>\n:companies/interviews" as routerCompanyInterviews
-participant "<<controllers>>\n:interviews" as controllersInterviews
-participant "<<model>>\n:Interview" as modelInterview
-database "<<MongoDB>>\n:interviews" as InterviewsDatabase
-
-client->server ++: req.get('/api/v1/companies/:companyId/interviews')
-server->routerCompanyInterviews ++: app.use('/api/v1/companies', companies)
-routerCompanyInterviews -> controllersInterviews ++: getInterviews()
-controllersInterviews->modelInterview ++: find({company: companyId})
-modelInterview ->InterviewsDatabase ++: query interviews
-InterviewsDatabase --> modelInterview --: interviews
-controllersInterviews <-- modelInterview --: interviews
-controllersInterviews->client --: response
-
-@enduml
-
-@startuml Get Interview (GET)
-
-header Sample JobFair Sequence Diagram
-footer Page %page% of %lastpage%
-title "Get Interview (GET)"
-
-actor "Client" as client
+actor "User/Admin" as client
 participant "<<javaScript>>\n:server" as server
 participant "<<router>>\n:interviews" as routerInterviews
 participant "<<controllers>>\n:interviews" as controllersInterviews
@@ -304,13 +268,12 @@ controllersInterviews->client --: response
 
 @enduml
 
-@startuml Add Interview (POST)
+@startuml Add Single Interview (POST)
 
-header Sample JobFair Sequence Diagram
 footer Page %page% of %lastpage%
-title "Add Interview (POST)"
+title "Add Single Interview (POST)"
 
-actor "Client" as client
+actor "User/Admin" as client
 participant "<<javaScript>>\n:server" as server
 participant "<<router>>\n:companies/interviews" as routerCompanyInterviews
 participant "<<controllers>>\n:interviews" as controllersInterviews
@@ -328,13 +291,12 @@ controllersInterviews->client --: response
 
 @enduml
 
-@startuml Update Interview (PUT)
+@startuml Update Single Interview (PUT)
 
-header Sample JobFair Sequence Diagram
 footer Page %page% of %lastpage%
-title "Update Interview (PUT)"
+title "Update Single Interview (PUT)"
 
-actor "Client" as client
+actor "User/Admin" as client
 participant "<<javaScript>>\n:server" as server
 participant "<<router>>\n:interviews" as routerInterviews
 participant "<<controllers>>\n:interviews" as controllersInterviews
@@ -352,13 +314,12 @@ controllersInterviews->client --: response
 
 @enduml
 
-@startuml Delete Interview (DELETE)
+@startuml Delete Single Interview (DELETE)
 
-header Sample JobFair Sequence Diagram
 footer Page %page% of %lastpage%
-title "Delete Interview (DELETE)"
+title "Delete Single Interview (DELETE)"
 
-actor "Client" as client
+actor "User/Admin" as client
 participant "<<javaScript>>\n:server" as server
 participant "<<router>>\n:interviews" as routerInterviews
 participant "<<controllers>>\n:interviews" as controllersInterviews
